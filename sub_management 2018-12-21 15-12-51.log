@@ -1,0 +1,5 @@
+Date="2018-12-21 15:12:54,142";	 Logger="subscriber_management";	 LogLevel="INFO";	 Message="Your current connection is: lab";	
+Date="2018-12-21 15:13:09,706";	 Logger="subscriber_management";	 LogLevel="DEBUG";	 Message="Creating connection to OCS by Soap API";	
+Date="2018-12-21 15:13:11,448";	 Logger="subscriber_management";	 LogLevel="INFO";	 Message="'ChargeOnAccount' Success. Params:={ICCID='8997219121000031445'; IMSI='425019613031945'; SubscriberStatus='Active'; TotalRunningTime='865.163'; }";	
+Date="2018-12-21 15:13:11,917";	 Logger="subscriber_management";	 LogLevel="INFO";	 Message="'ChargeOnAccount' Success. Params:={ICCID='8997219121000031446'; IMSI='425019613031946'; SubscriberStatus='Active'; TotalRunningTime='468.479'; }";	
+Date="2018-12-21 15:13:11,919";	 Logger="subscriber_management";	 LogLevel="INFO";	 Message="Finished , TotalRunningTime=923";	

@@ -1,0 +1,5 @@
+Date="2018-12-21 15:22:57,187";	 Logger="subscriber_management";	 LogLevel="INFO";	 Message="Your current connection is: lab";	
+Date="2018-12-21 15:23:15,838";	 Logger="subscriber_management";	 LogLevel="DEBUG";	 Message="Creating connection to OCS by Soap API";	
+Date="2018-12-21 15:23:17,127";	 Logger="subscriber_management";	 LogLevel="INFO";	 Message="Pass";	
+Date="2018-12-21 15:23:17,609";	 Logger="subscriber_management";	 LogLevel="INFO";	 Message="Pass";	
+Date="2018-12-21 15:23:17,611";	 Logger="subscriber_management";	 LogLevel="INFO";	 Message="Finished , TotalRunningTime='884'";	
