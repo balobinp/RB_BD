@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 import sys
 import os
 from os.path import isfile, isdir, join, normpath
+import pyodbc # for MS SQL
+import mysql.connector # for MySQL. pip install mysql-connector-python-rf
 
 # SendMsu variables
 
@@ -12,14 +14,64 @@ ss7_path = "/cgi-bin/ss7gw.fcgi"
 get_info = "24027000001F0D00010000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
 get_info_mo = "24027000001F0D00210000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
 
-# Test function
+# Greetings function
 
-def test_func():
+def greetings_func():
     """Test function to say Greetings from Roamability!"""
-    print('Greetings from Roamability!')
+    print('Greetings from Roamability!!!')
     return None
 
 
+# DataBase connections Classes
+
+class MySqlConnect:
+    """
+    #This method is to connect to MySQL DB.
+    #Usage example. Connect to OCSDBREP1 (BSS):
+    sql_srt='SELECT MSISDN, VisitedNetworkTadig FROM TAP.GPRS_CALL LIMIT 5'
+    with MySqlConnect('172.18.11.40', 'BSS', 'noc', 'WcQUzkXiXwoxnFfGnRxb') as cnxn:
+        df = pd.read_sql_query(sql_srt, cnxn)
+    """
+
+    def __init__(self, host, db, uid, pwd):
+        self.user = uid
+        self.password = pwd
+        self.host = host
+        self.database = db
+        
+    def __enter__(self):
+        self.cnxn = mysql.connector.connect(user=self.user, password=self.password, host=self.host, database=self.database)
+        return self.cnxn
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.cnxn:
+            self.cnxn.close()
+
+
+class MssqlConnect:
+    """
+    #This method is to connect to MS SQL DB.
+    #Usage example. Connect to OCSDBREP1 (BSS):
+    sql_srt='SELECT TOP(5) * FROM USAGE_TYPE;'
+    with MssqlConnect('172.18.11.82', '10028', 'BSS', 'iKQVm40AZAmyRaw72LeY') as cnxn:
+        df = pd.read_sql_query(sql_srt, cnxn, coerce_float=False)
+    """
+    
+    def __init__(self, server, db, uid, pwd):
+        self.server = server
+        self.db = db
+        self.uid = uid
+        self.pwd = pwd
+        
+    def __enter__(self):
+        con_str = f'DRIVER={{SQL Server}};SERVER={self.server};DATABASE={self.db};UID={self.uid};PWD={self.pwd}'
+        self.cnxn = pyodbc.connect(con_str)
+        return self.cnxn
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.cnxn:
+            self.cnxn.close()
+	
 # Search in files by Tags functions
 
 def find_files_by_tags(paths, all_tags, any_tags):
@@ -149,7 +201,7 @@ def prn(ogt, dgt, imsi):
     return resp
 
 
-def sai(ogt, dgt, imsi):
+def sai(ogt, dgt, imsi, node):
     req = """<?xml version=\"1.0\"?>
           <ss7gw request=\"SAIN\">
           <d_ssn>6</d_ssn>
@@ -159,8 +211,8 @@ def sai(ogt, dgt, imsi):
           <imsi>%s</imsi>
           <num_req_vec>1</num_req_vec>
           <sccp_np>7</sccp_np>
-          <node_type>0</node_type>
-          </ss7gw>""" % (ogt, dgt, imsi)
+          <node_type>%s</node_type>
+          </ss7gw>""" % (ogt, dgt, imsi, node)
     resp = executeHTTP(req, ss7_url, ss7_path)
     return resp
 
