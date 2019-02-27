@@ -14,6 +14,60 @@ ss7_path = "/cgi-bin/ss7gw.fcgi"
 get_info = "24027000001F0D00010000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
 get_info_mo = "24027000001F0D00210000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
 
+switch_01_payload = '24027000001F0D00010000BFFF0100000000000010F5375954EF29FB9A7F41ADE8444236A3' #From Denis
+#switch_01_payload = '24027000001f0d00010000bfff0100000000000010554f212dbbad49a1caf2573e1a626139' #From FSM
+switch_02_payload = '24027000001F0D00010000BFFF0100000000000040a740AD174703383798A7A6545BB36491' #From FSM
+
+# NRT CDR variables
+
+nrt_cdr_ver4_col = ['CDR_ID',
+            'USAGE_TIMESTAMP',
+            'Subscriber ID',
+            'IMSI',
+            'ICCID',
+            'MSISDN',
+            'Account ID',
+            'Account Name',
+            'USAGE_TYPE_ID',
+            'USAGE_TYPE_DESCRIPTION',
+            'MCC',
+            'MNC',
+            'Network Name',
+            'Country Name',
+            'Tadig Code',
+            'Destination phone number',
+            'Session ID',
+            'APN',
+            'RAT (RadioAccessType)',
+            'IMEI',
+            'Download Bitrate',
+            'Upload Bitrate',
+            'QUANTITY',
+            'QUANTITY_DESCRIPTION',
+            'COST',
+]
+
+nrt_cdr_ver3_col = ['CDR_ID',
+            'USAGE_TIMESTAMP',
+            'Subscriber ID',
+            'IMSI',
+            'ICCID',
+            'MSISDN',
+            'Account ID',
+            'Account Name',
+            'USAGE_TYPE_ID',
+            'USAGE_TYPE_DESCRIPTION',
+            'MCC',
+            'MNC',
+            'Network Name',
+            'Country Name',
+            'Destination phone number',
+            'Session ID',
+            'QUANTITY',
+            'QUANTITY_DESCRIPTION',
+            'COST',
+]
+
 # Greetings function
 
 def greetings_func():
