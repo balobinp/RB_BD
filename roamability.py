@@ -18,6 +18,20 @@ switch_01_payload = '24027000001F0D00010000BFFF0100000000000010F5375954EF29FB9A7
 #switch_01_payload = '24027000001f0d00010000bfff0100000000000010554f212dbbad49a1caf2573e1a626139' #From FSM
 switch_02_payload = '24027000001F0D00010000BFFF0100000000000040a740AD174703383798A7A6545BB36491' #From FSM
 
+ogt = {'p4':'48790993070',
+       'partner':'97254120624',
+       'sure':'447797706411',
+       'tot':'66893773228',
+       'porto_seguro':'550549900000',
+       'rusec_rus':'79028710069',
+       'rusec_int':'417999880000024',
+       'multi_byte_sponsor':'85263347864',
+       'smart1':'639180009880',
+       'smart2':'639180009881',
+       'smart3':'639180009882',
+       'smart4':'639180009883',
+	   'telzar':'972559900040',}
+
 # NRT CDR variables
 
 nrt_cdr_ver4_col = ['CDR_ID',
@@ -72,7 +86,7 @@ nrt_cdr_ver3_col = ['CDR_ID',
 
 def greetings_func():
     """Test function to say Greetings from Roamability!"""
-    print('Greetings from Roamability!!!')
+    print('Greetings from Roamability!!!', '\n')
     return None
 
 
@@ -203,13 +217,20 @@ def print_imsi_prof(ogt, imsi, msc, payload_type):
         sys.exit("Error message: payload_type should be as_resp or as_mo")
     resp = sendSMS(ogt, imsi, msc, payload)
     soup = BeautifulSoup(resp, 'xml')
-    print(soup, '\n')
+    print(soup.prettify, '\n')
     if soup.response.response:
-        s = soup.response.response.text
+        s = soup.response.response.text.upper()
         imsi_list = re.findall('(0\d08)(\d{16})', s)
         print('This SIM card contains the following IMSIs:')
         for slot, imsi in imsi_list:
             print(f"Slot {slot[1]} {''.join([imsi[i] for i in [0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14]])}")
+        app_ver = re.findall('FFFFFFF000(\d{6})', s)
+        if app_ver:
+            print(f'\nApplet ver.: {int(app_ver[0][:2])}.{int(app_ver[0][2:4])}.{int(app_ver[0][4:6])}')
+        mccmnc_extract = re.findall('FFFFFFF000\d{6}(.{6})', s)
+        if mccmnc_extract:
+            mccmnc = ''.join([mccmnc_extract[0][i] for i in [1, 0, 3, 5, 4]])
+            print(f'MCCMNC: {mccmnc}')
     else:
         print('No info in response.')
     return None
@@ -289,5 +310,20 @@ def sendSMS(ogt, imsi, msc, payload):
          <sms_imsi>%s</sms_imsi>
          <map>3</map>
          </ss7gw>""" % (ogt, msc, imsi, ogt, payload, imsi)
+    resp = executeHTTP(req, ss7_url, ss7_path)
+    return resp
+	
+
+def cl(ogt, dgt, imsi, d_ssn=7):
+    req = """<?xml version=\"1.0\"?>
+          <ss7gw request=\"CL\">
+          <d_ssn>%s</d_ssn>
+          <o_gt>%s</o_gt>
+          <d_gt>%s</d_gt>
+          <o_ssn>6</o_ssn>
+          <imsi>%s</imsi>
+          <password>123</password>
+          <cancel_type>0</cancel_type>
+          </ss7gw>""" % (d_ssn, ogt, dgt, imsi)
     resp = executeHTTP(req, ss7_url, ss7_path)
     return resp
