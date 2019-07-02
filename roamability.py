@@ -6,6 +6,7 @@ import os
 from os.path import isfile, isdir, join, normpath
 import pyodbc # for MS SQL
 import mysql.connector # for MySQL. pip install mysql-connector-python-rf
+import cx_Oracle
 
 # SendMsu variables
 
@@ -30,7 +31,10 @@ ogt = {'p4':'48790993070',
        'smart2':'639180009881',
        'smart3':'639180009882',
        'smart4':'639180009883',
-	   'telzar':'972559900040',}
+	   'telzar':'972559900040',
+	   'x2one':'972553316228',
+       'cellact':'972557016315',
+	   'netmore':'46731726312',}
 
 # NRT CDR variables
 
@@ -97,7 +101,7 @@ class MySqlConnect:
     #This method is to connect to MySQL DB.
     #Usage example. Connect to OCSDBREP1 (BSS):
     sql_srt='SELECT MSISDN, VisitedNetworkTadig FROM TAP.GPRS_CALL LIMIT 5'
-    with MySqlConnect('172.18.11.40', 'BSS', 'noc', 'WcQUzkXiXwoxnFfGnRxb') as cnxn:
+    with rb.MySqlConnect('172.18.11.40', 'BSS', 'noc', 'WcQUzkXiXwoxnFfGnRxb') as cnxn:
         df = pd.read_sql_query(sql_srt, cnxn)
     """
 
@@ -121,7 +125,7 @@ class MssqlConnect:
     #This method is to connect to MS SQL DB.
     #Usage example. Connect to OCSDBREP1 (BSS):
     sql_srt='SELECT TOP(5) * FROM USAGE_TYPE;'
-    with MssqlConnect('172.18.11.82', '10028', 'BSS', 'iKQVm40AZAmyRaw72LeY') as cnxn:
+    with rb.MssqlConnect('172.18.11.82', '10028', 'BSS', 'iKQVm40AZAmyRaw72LeY') as cnxn:
         df = pd.read_sql_query(sql_srt, cnxn, coerce_float=False)
     """
     
@@ -134,6 +138,30 @@ class MssqlConnect:
     def __enter__(self):
         con_str = f'DRIVER={{SQL Server}};SERVER={self.server};DATABASE={self.db};UID={self.uid};PWD={self.pwd}'
         self.cnxn = pyodbc.connect(con_str)
+        return self.cnxn
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.cnxn:
+            self.cnxn.close()
+			
+
+class OracleConnect:
+    """
+    #This method is to connect to Oracle DB.
+    #Usage example. Connect to DMI Oracle DB:
+    sql_srt='SELECT TOP(5) * FROM USAGE_TYPE;'
+    with rb.OracleConnect('172.18.11.82', '10028', 'BSS', 'iKQVm40AZAmyRaw72LeY') as cnxn:
+        df = pd.read_sql_query(sql_srt, cnxn, coerce_float=False)
+    """
+    
+    def __init__(self, uid, pwd, sid):
+        self.sid = sid
+        self.uid = uid
+        self.pwd = pwd
+        
+    def __enter__(self):
+        con_str = f'{self.uid}/{self.pwd}@{self.sid}'
+        self.cnxn = cx_Oracle.connect(con_str)
         return self.cnxn
     
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -207,6 +235,22 @@ def print_description_from_file(path_name,file_name):
 
 
 # SendMsu functions
+
+def decode_payload_response(resp):
+    s = resp.upper()
+    #imsi_list = re.findall('(0\d08)(\d{16})', s)
+    imsi_list = re.findall('(0\d08)(\d9\d{14})', s)
+    print('This SIM card contains the following IMSIs:')
+    for slot, imsi in imsi_list:
+        print(f"Slot {slot[1]} {''.join([imsi[i] for i in [0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14]])}")
+    app_ver = re.findall('FFFFFFF000(\d{6})', s)
+    if app_ver:
+        print(f'\nApplet ver.: {int(app_ver[0][:2])}.{int(app_ver[0][2:4])}.{int(app_ver[0][4:6])}')
+    mccmnc_extract = re.findall('FFFFFFF000\d{6}(.{6})', s)
+    if mccmnc_extract:
+        mccmnc = ''.join([mccmnc_extract[0][i] for i in [1, 0, 3, 5, 4]])
+        print(f'MCCMNC: {mccmnc}')
+
 
 def print_imsi_prof(ogt, imsi, msc, payload_type):
     if payload_type == 'as_resp':
