@@ -10,14 +10,16 @@ import cx_Oracle
 
 # SendMsu variables
 
+S6A_URL = '172.18.11.90'
+S6A_PATH = '/cgi-bin/http.fcgi'
 ss7_url = "172.18.11.10"
 ss7_path = "/cgi-bin/ss7gw.fcgi"
-get_info = "24027000001F0D00010000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
-get_info_mo = "24027000001F0D00210000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
+get_info = "027000001F0D00010000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
+get_info_mo = "027000001F0D00210000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
 
-switch_01_payload = '24027000001F0D00010000BFFF0100000000000010F5375954EF29FB9A7F41ADE8444236A3' #From Denis
-#switch_01_payload = '24027000001f0d00010000bfff0100000000000010554f212dbbad49a1caf2573e1a626139' #From FSM
-switch_02_payload = '24027000001F0D00010000BFFF0100000000000040a740AD174703383798A7A6545BB36491' #From FSM
+switch_01_payload = '027000001F0D00010000BFFF0100000000000010F5375954EF29FB9A7F41ADE8444236A3' #From Denis
+#switch_01_payload = '027000001f0d00010000bfff0100000000000010554f212dbbad49a1caf2573e1a626139' #From FSM
+switch_02_payload = '027000001F0D00010000BFFF0100000000000040a740AD174703383798A7A6545BB36491' #From FSM
 
 ogt = {'p4':'48790993070',
        'partner':'97254120624',
@@ -31,10 +33,19 @@ ogt = {'p4':'48790993070',
        'smart2':'639180009881',
        'smart3':'639180009882',
        'smart4':'639180009883',
-	   'telzar':'972559900040',
-	   'x2one':'972553316228',
+       'telzar':'972559900040',
+       'x2one':'972553316228',
        'cellact':'972557016315',
-	   'netmore':'46731726312',}
+       'netmore':'46731726312',
+       'p4_naka_01':'48790998145',
+       'p4_naka_02':'48790998146',
+       'p4_naka_03':'48790998147',
+       'partner_naka_01':'97254120634',
+       'partner_naka_02':'97254120635',
+       'partner_naka_03':'97254120636',
+       'partner_naka_04':'97254120637',
+       'mb':'852633477591',
+       'maxcom':'525575709019'}
 
 # NRT CDR variables
 
@@ -195,6 +206,7 @@ def find_txt_files_and_folders(path_name):
 
 def search_tags_in_file(path_name, files_list, all_tags, any_tags):
     for file in files_list:
+        #print(f"{normpath(join(path_name, file))}")
         with open(join(path_name, file)) as inf:
             # Преобразовать файл в список. В качествер разделителя пробел. read читает весь файл.
             words_in_file = inf.read().lower().split()
@@ -285,7 +297,40 @@ def executeHTTP(request, url, path):
     client.request("POST", path, request, {"Content-Type": "text/xml"})
     resp = client.getresponse()
     return resp.read()
-
+	
+def air(imsi, ohost, orealm, drealm, mcc, mnc):
+    req = """<?xml version=\"1.0\"?>
+         <roam:air xmlns:roam="roamability:gtw:s6a">
+         <roam:o-realm>%s</roam:o-realm>
+         <roam:o-host>%s</roam:o-host>
+         <roam:d-realm>%s</roam:d-realm>
+         <roam:imsi>%s</roam:imsi>
+         <roam:vplmn  mcc="%s" mnc="%s"/>
+         <roam:eutran  numVec="1" immediate="1"/>
+         </roam:air>""" % (orealm, ohost, drealm, imsi, mcc, mnc)
+    resp = executeHTTP(req, S6A_URL, S6A_PATH)
+    return resp
+	
+def clr(imsi, ohost, orealm, dhost, drealm):
+    req = """<roam:clr proxy="true" xmlns:roam="roamability:gtw:s6a">
+          <roam:o-realm>%s</roam:o-realm>
+          <roam:o-host>%s</roam:o-host>
+          <roam:d-realm>%s</roam:d-realm>
+          <roam:d-host>%s</roam:d-host>
+          <roam:imsi>%s</roam:imsi>
+          <!--Optional:
+          <roam:supp-feat vendor="3" list_id="2" list="7"/>-->
+          <!--Optional:
+          <roam:vendor-specific-app-id vendor-id="7" auth-app-id="7" acct-app-id="7"/>-->
+          <!-- MME_UPDATE_PROCEDURE (0)-->
+          <!-- SGSN_UPDATE_PROCEDURE (1)-->
+          <!-- SUBSCRIPTION_WITHDRAWAL (2)-->
+          <!-- UPDATE_PROCEDURE_IWF (3)-->
+          <!-- INITIAL_ATTACH_PROCEDURE (4)-->
+          <roam:cancel-type>2</roam:cancel-type>
+        </roam:clr>""" % (orealm, ohost, drealm, dhost, imsi)
+    resp = executeHTTP(req, S6A_URL, S6A_PATH)
+    return resp
 
 def sri4sm(ogt, msisdn):
     req = """<?xml version=\"1.0\"?>
@@ -302,7 +347,6 @@ def sri4sm(ogt, msisdn):
     resp = executeHTTP(req, ss7_url, ss7_path)
     return resp
 
-
 def prn(ogt, dgt, imsi):
     req = """<?xml version=\"1.0\"?>
           <ss7gw request=\"PRN\">
@@ -318,7 +362,6 @@ def prn(ogt, dgt, imsi):
           </ss7gw>""" % (ogt, dgt, imsi, dgt, ogt)
     resp = executeHTTP(req, ss7_url, ss7_path)
     return resp
-
 
 def sai(ogt, dgt, imsi, node):
     req = """<?xml version=\"1.0\"?>
@@ -350,7 +393,7 @@ def sendSMS(ogt, imsi, msc, payload):
          <corr_id>1</corr_id>
          <seed>1122</seed>
          <msisdn>123</msisdn>
-         <d3_key>%s</d3_key>
+         <message>%s</message>
          <sms_imsi>%s</sms_imsi>
          <map>3</map>
          </ss7gw>""" % (ogt, msc, imsi, ogt, payload, imsi)
