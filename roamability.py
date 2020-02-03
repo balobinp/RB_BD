@@ -160,8 +160,8 @@ class OracleConnect:
     """
     #This method is to connect to Oracle DB.
     #Usage example. Connect to DMI Oracle DB:
-    sql_srt='SELECT TOP(5) * FROM USAGE_TYPE;'
-    with rb.OracleConnect('172.18.11.82', '10028', 'BSS', 'iKQVm40AZAmyRaw72LeY') as cnxn:
+    sql_srt = 'SELECT COUNT(*) FROM s_imsi si'
+    with OracleConnect('DMI', 'dd607605ce341', 'DMI_TEST') as cnxn:
         df = pd.read_sql_query(sql_srt, cnxn, coerce_float=False)
     """
     
