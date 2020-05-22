@@ -7,6 +7,7 @@ from os.path import isfile, isdir, join, normpath
 import pyodbc # for MS SQL
 import mysql.connector # for MySQL. pip install mysql-connector-python-rf
 import cx_Oracle
+import binascii
 
 # SendMsu variables
 
@@ -103,7 +104,24 @@ def greetings_func():
     """Test function to say Greetings from Roamability!"""
     print('Greetings from Roamability!!!', '\n')
     return None
-
+	
+def gsm_encode(plaintext):
+    '''Encode string into GSM hex code by 3GPP TS 23.038.
+    Use: gsm_encode("sv")'''
+    gsm = ("@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞ\x1bÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?"
+       "¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà")
+    ext = ("````````````````````^```````````````````{}`````\\````````````[~]`"
+           "|````````````````````````````````````€``````````````````````````")
+    res = ""
+    for c in plaintext:
+        idx = gsm.find(c);
+        if idx != -1:
+            res += chr(idx)
+            continue
+        idx = ext.find(c)
+        if idx != -1:
+            res += chr(27) + chr(idx)
+    return binascii.b2a_hex(res.encode('utf-8'))
 
 # DataBase connections Classes
 
