@@ -15,12 +15,14 @@ S6A_URL = '172.18.11.90'
 S6A_PATH = '/cgi-bin/http.fcgi'
 ss7_url = "172.18.11.10"
 ss7_path = "/cgi-bin/ss7gw.fcgi"
+
 get_info = "027000001F0D00010000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
 get_info_mo = "027000001F0D00210000BFFF01000000000000102F978372C730834EF445172BD26B8C8F"
 
 switch_01_payload = '027000001F0D00010000BFFF0100000000000010F5375954EF29FB9A7F41ADE8444236A3' #From Denis
 #switch_01_payload = '027000001f0d00010000bfff0100000000000010554f212dbbad49a1caf2573e1a626139' #From FSM
 switch_02_payload = '027000001F0D00010000BFFF0100000000000040a740AD174703383798A7A6545BB36491' #From FSM
+get_config = '027000001F0D00010000BFFF0100000000000010733FE1C20ECA937911B9067460AA6612'
 
 ogt = {'p4':'48790993070',
        'partner':'97254120624',
@@ -35,7 +37,7 @@ ogt = {'p4':'48790993070',
        'smart3':'639180009882',
        'smart4':'639180009883',
        'telzar':'972559900040',
-       'x2one':'972553316228',
+       'x2one':'972553316228', #972553316240 -972553316245
        'cellact':'972557016315',
        'netmore':'46731726312',
        'p4_naka_01':'48790998145',
@@ -46,7 +48,15 @@ ogt = {'p4':'48790993070',
        'partner_naka_03':'97254120636',
        'partner_naka_04':'97254120637',
        'mb':'852633477591',
-       'maxcom':'525575709019'}
+       'maxcom':'525575709019',
+       'orange':'48507909001',
+       'jt':'447797707084',
+       'tcom':'359999320032',
+       'volna':'79785569998',
+       'surf_test':'550170002133',
+       'surf_prod':'550170000133',
+       'volna':'79785750017',
+       'mexal':'528127341842'}
 
 # NRT CDR variables
 
@@ -224,7 +234,7 @@ def find_txt_files_and_folders(path_name):
 
 def search_tags_in_file(path_name, files_list, all_tags, any_tags):
     for file in files_list:
-        #print(f"{normpath(join(path_name, file))}")
+        # print(f"{normpath(join(path_name, file))}")
         with open(join(path_name, file)) as inf:
             # Преобразовать файл в список. В качествер разделителя пробел. read читает весь файл.
             words_in_file = inf.read().lower().split()
@@ -315,7 +325,8 @@ def executeHTTP(request, url, path):
     client.request("POST", path, request, {"Content-Type": "text/xml"})
     resp = client.getresponse()
     return resp.read()
-	
+
+
 def air(imsi, ohost, orealm, drealm, mcc, mnc):
     req = """<?xml version=\"1.0\"?>
          <roam:air xmlns:roam="roamability:gtw:s6a">
@@ -328,6 +339,7 @@ def air(imsi, ohost, orealm, drealm, mcc, mnc):
          </roam:air>""" % (orealm, ohost, drealm, imsi, mcc, mnc)
     resp = executeHTTP(req, S6A_URL, S6A_PATH)
     return resp
+	
 	
 def clr(imsi, ohost, orealm, dhost, drealm):
     req = """<roam:clr proxy="true" xmlns:roam="roamability:gtw:s6a">
@@ -350,20 +362,22 @@ def clr(imsi, ohost, orealm, dhost, drealm):
     resp = executeHTTP(req, S6A_URL, S6A_PATH)
     return resp
 
-def sri4sm(ogt, msisdn):
+def sri4sm(ogt, msisdn, dgt):
     req = """<?xml version=\"1.0\"?>
         <ss7gw request=\"SRI_SM\">
+        <timeout>3</timeout>
         <d_ssn>6</d_ssn>
         <o_ssn>8</o_ssn>
+        <sccp_np>1</sccp_np>
         <o_gt>%s</o_gt>
         <d_gt>%s</d_gt>
         <msisdn>%s</msisdn>
         <priority>1</priority>
         <address>%s</address>
-        </ss7gw>""" % (ogt, msisdn, msisdn, ogt)
-
+        </ss7gw>""" % (ogt, dgt, msisdn, ogt)
     resp = executeHTTP(req, ss7_url, ss7_path)
     return resp
+	
 
 def prn(ogt, dgt, imsi):
     req = """<?xml version=\"1.0\"?>
@@ -380,6 +394,7 @@ def prn(ogt, dgt, imsi):
           </ss7gw>""" % (ogt, dgt, imsi, dgt, ogt)
     resp = executeHTTP(req, ss7_url, ss7_path)
     return resp
+
 
 def sai(ogt, dgt, imsi, node):
     req = """<?xml version=\"1.0\"?>
@@ -430,5 +445,79 @@ def cl(ogt, dgt, imsi, d_ssn=7):
           <password>123</password>
           <cancel_type>0</cancel_type>
           </ss7gw>""" % (d_ssn, ogt, dgt, imsi)
+    resp = executeHTTP(req, ss7_url, ss7_path)
+    return resp
+	
+
+# {msisdn,0},{imsi,0},{sccp_np,0},{acn,0},{map,0},{password,0},{d_pc,0},{d_tt,0},{gsm_scf_addr,0},{continue,0}
+def ati(ogt, msisdn, dgt):
+    req = """<?xml version=\"1.0\"?>
+        <ss7gw request=\"SEND_IMSI\">
+        <timeout>3</timeout>
+        <sccp_np>1</sccp_np>
+        <d_ssn>6</d_ssn>
+        <o_ssn>8</o_ssn>
+        <o_gt>%s</o_gt>
+        <d_gt>%s</d_gt>
+        <msisdn>%s</msisdn>
+        </ss7gw>""" % (ogt, dgt, msisdn)
+    resp = executeHTTP(req, ss7_url, ss7_path)
+    return resp
+	
+	
+def sri(ogt, msisdn, dgt):
+    req = """<?xml version=\"1.0\"?>
+        <ss7gw request=\"SRI\">
+        <timeout>3</timeout>
+        <d_ssn>6</d_ssn>
+        <o_ssn>8</o_ssn>
+        <sccp_np>1</sccp_np>
+        <o_gt>%s</o_gt>
+        <d_gt>%s</d_gt>
+        <msisdn>%s</msisdn>
+        </ss7gw>""" % (ogt, dgt, msisdn)
+    resp = executeHTTP(req, ss7_url, ss7_path)
+    return resp
+	
+
+def psi(ogt, dgt, imsi):
+    req = """<?xml version=\"1.0\"?>
+    <ss7gw request=\"PSI\">
+    <o_ssn>6</o_ssn>
+    <d_ssn>7</d_ssn>
+    <o_gt>{0}</o_gt>
+    <d_gt>{1}</d_gt>
+    <imsi>{2}</imsi>
+    </ss7gw>""".format(ogt, dgt, imsi)
+    resp = executeHTTP(req, ss7_url, ss7_path)
+    return resp
+	
+	
+def psl(ogt, dgt, imsi):
+    req = """<?xml version=\"1.0\"?>
+    <ss7gw request=\"PSL\">
+    <o_ssn>6</o_ssn>
+    <d_ssn>7</d_ssn>
+    <o_gt>{0}</o_gt>
+    <d_gt>{1}</d_gt>
+    <imsi>{2}</imsi>
+    <location_type>1</location_type>
+    </ss7gw>""".format(ogt, dgt, imsi)
+    resp = executeHTTP(req, ss7_url, ss7_path)
+    return resp
+	
+	
+# send_imsi('79785750017', '79217428080', '79217428080')
+def send_imsi(ogt, msisdn, dgt):
+    req = """<?xml version=\"1.0\"?>
+        <ss7gw request=\"SEND_IMSI\">
+        <timeout>3</timeout>
+        <sccp_np>1</sccp_np>
+        <d_ssn>6</d_ssn>
+        <o_ssn>7</o_ssn>
+        <o_gt>%s</o_gt>
+        <d_gt>%s</d_gt>
+        <msisdn>%s</msisdn>
+        </ss7gw>""" % (ogt, dgt, msisdn)
     resp = executeHTTP(req, ss7_url, ss7_path)
     return resp
