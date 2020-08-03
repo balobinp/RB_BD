@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2bbda280-7a70-49db-93f8-364f364a5ea5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IMSIAllocationVer0.1.2.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/IMSIAllocationVer0.1.2.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RB_Desctop_Python3.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_Desctop_Python3.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RB_PROFIT_REPORT_VER10.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_PROFIT_REPORT_VER10.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RB_SMARTCARD_VER01.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_SMARTCARD_VER01.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roamability.py" beforeDir="false" afterPath="$PROJECT_DIR$/roamability.py" afterDir="false" />
     </list>
@@ -13,12 +16,12 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/roamability.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
-              <caret line="254" column="44" lean-forward="true" selection-start-line="254" selection-start-column="44" selection-end-line="254" selection-end-column="44" />
+            <state relative-caret-position="235">
+              <caret line="70" selection-start-line="70" selection-end-line="86" selection-end-column="48" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -150,8 +153,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/roamability.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="254" column="44" lean-forward="true" selection-start-line="254" selection-start-column="44" selection-end-line="254" selection-end-column="44" />
+        <state relative-caret-position="235">
+          <caret line="70" selection-start-line="70" selection-end-line="86" selection-end-column="48" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

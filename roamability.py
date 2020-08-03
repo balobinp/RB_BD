@@ -352,6 +352,45 @@ class SendMsgSs7:
             mccmnc = ''.join([mccmnc_extract[0][i] for i in [1, 0, 3, 5, 4]])
             print(f'MCCMNC: {mccmnc}')
 
+    def get_config_decoder(self, config):
+        applet_enabling_flag = config[0:2]
+        applet_enabling_flag_dict = {'01': 'Activate', '00': 'Deactivate'}
+        mode = config[2:4]
+        mode_dict = {'01': 'Events only mode', '02': 'Timer only mode', '03': 'Events & Timer mode'}
+        default_imsi = config[4:6]
+        default_imsi_dict = {'00': 'IMSI0', '01': 'IMSI1', '02': 'IMSI2', '03': 'IMSI3', '04': 'IMSI4', '05': 'IMSI5'}
+        polling_period = config[6:10]
+        features_activation_flags = f'{int(config[10:14], 16):0>16b}'
+        refresh_type = config[14:16]
+        def_refresh_type = config[16:18]
+        no_service_swap_timer = config[18:22]
+        scan_delay_timer = config[22:26]
+        refresh_retry = config[26:28]
+        refresh_retry_delay = config[28:30]
+        print(f'Applet enabling flag: {applet_enabling_flag_dict[applet_enabling_flag]}')
+        print(f'Mode: {mode_dict[mode]}')
+        print(f'Default IMSI: {default_imsi_dict[default_imsi]}')
+        print(f'Polling period: {int(polling_period, 16)} sec.')
+        print(f'Features activation flags: {features_activation_flags}')
+        # Features activation flags 1(1 Enable, 0 Disable):
+        features_activation_dict = {'1': 'Enable', '0': 'Disable'}
+        # b1:Start with Primary (После рестарта UE будет выбран профайл 0).
+        print(f'    Start with Primary: {features_activation_dict[features_activation_flags[-1]]}')
+        # b2:Reset Loci, PS Loci (обнуление TIMSI).
+        print(f'    Reset Loci, PS Loci: {features_activation_dict[features_activation_flags[-2]]}')
+        # b3:RB_MODE (В HOME MCC будут перебираться IMSI спонсора).
+        print(f'    RB_MODE (Sponsor IMSI in HPLMN): {features_activation_dict[features_activation_flags[-3]]}')
+        # b4 Skip Primary IMSI in roaming: (Исключение Home IMSI в роуминге).
+        print(f'    Skip Primary IMSI in roaming: {features_activation_dict[features_activation_flags[-4]]}')
+        # b5:
+        # b6-b16: RFU
+        print(f'Refresh Type: {refresh_type}')
+        print(f'Default refresh Type: {def_refresh_type}')
+        print(f'No Service Swap Timer: {int(no_service_swap_timer, 16)} sec.')
+        print(f'Refresh Retry: {refresh_retry}')
+        print(f'Refresh Retry Delay: {int(refresh_retry_delay, 16)} sec.')
+        print(f'Scan delay timer: {int(scan_delay_timer, 16)} sec.')
+
     def print_imsi_prof(self, ogt, imsi, msc, payload_type):
         """
         Requests GET INFO from SIM card with Roamability applet ver. 1.7 and above.
@@ -373,10 +412,9 @@ class SendMsgSs7:
         else:
             sys.exit("Error message: payload_type should be as_resp or as_mo")
         resp = self.sendSMS(ogt, imsi, msc, payload)
-        soup = BeautifulSoup(resp, 'xml')
-        print(soup.prettify, '\n')
-        if soup.response.response:
-            s = soup.response.response.text.upper()
+        print(resp.prettify, '\n')
+        if resp.response.response:
+            s = resp.response.response.text.upper()
             imsi_list = re.findall('(0\d08)(\d{16})', s)
             print('This SIM card contains the following IMSIs:')
             for slot, imsi in imsi_list:
