@@ -3,11 +3,24 @@
   <component name="ChangeListManager">
     <list default="true" id="2bbda280-7a70-49db-93f8-364f364a5ea5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IMSIAllocationVer0.1.2.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/IMSIAllocationVer0.1.2.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AL_CUSTOMIZED_VER17.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHECK_MB_INVOICE_VER02.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/CHECK_MB_INVOICE_VER02.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COVID-19.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/COVID-19.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IMSIAllocationVer0.1.2.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IMSIAllocationVer0.1.3.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MCC_MAP_V8.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/MCC_MAP_V8.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PP_Create_New_Price_File_combined_with_new_v20.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/PP_Create_New_Price_File_combined_with_new_v20.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RB_COMPARE_TARIFF_FROM_FILE_200621.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_COMPARE_TARIFF_FROM_FILE_200621.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RB_Desctop_Python3.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_Desctop_Python3.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RB_PROFIT_REPORT_VER10.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_PROFIT_REPORT_VER10.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RB_OCS_BSS_CHARGE_COMPARE_VER06.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_OCS_BSS_CHARGE_COMPARE_VER06.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RB_PROFIT_REPORT_VER10.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RB_PROFIT_REPORT_VER11.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_PROFIT_REPORT_VER11.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RB_SMARTCARD_VER01.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_SMARTCARD_VER01.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roamability.py" beforeDir="false" afterPath="$PROJECT_DIR$/roamability.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RB_SOFT_PROFILES_v17.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_SOFT_PROFILES_v17.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RB_UPDATE_TARIFFS_OCS_VER06.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_UPDATE_TARIFFS_OCS_VER06.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RB_eSIM_PROFILES_200419.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/RB_eSIM_PROFILES_200419.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SponsorMvnoChangeDmiVer01.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/merged.pdf" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,8 +33,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/roamability.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="235">
-              <caret line="70" selection-start-line="70" selection-end-line="86" selection-end-column="48" />
+            <state relative-caret-position="544">
+              <caret line="331" column="17" selection-start-line="331" selection-start-column="12" selection-end-line="331" selection-end-column="17" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -62,6 +75,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -78,7 +92,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="RunDashboard">
@@ -153,8 +166,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/roamability.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="235">
-          <caret line="70" selection-start-line="70" selection-end-line="86" selection-end-column="48" />
+        <state relative-caret-position="544">
+          <caret line="331" column="17" selection-start-line="331" selection-start-column="12" selection-end-line="331" selection-end-column="17" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
