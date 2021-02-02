@@ -326,6 +326,7 @@ class SendMsgSs7:
            'jt': '447797707084',
            'tcom': '359999320032',
            'volna': '79785569998',
+		   'win': '79789300033',
            'surf_test': '550170002133',
            'surf_prod': '550170000133',
            'volna': '79785750017',
@@ -415,7 +416,7 @@ class SendMsgSs7:
         print(resp.prettify, '\n')
         if resp.response.response:
             s = resp.response.response.text.upper()
-            imsi_list = re.findall('(0\d08)(\d{16})', s)
+            imsi_list = re.findall('(0\d08)(\d9\d{14})', s)
             print('This SIM card contains the following IMSIs:')
             for slot, imsi in imsi_list:
                 print(
@@ -445,12 +446,13 @@ class SendMsgSs7:
         resp = self.execute_http(req, self.ss7_url, self.ss7_path)
         return BeautifulSoup(resp, 'xml')
 
-    def sri4sm(self, ogt, msisdn, dgt):
+    def sri4sm(self, ogt, msisdn, dgt, sccp_np=1):
         """
         Send SRIFSM SS7 message.
         :param ogt: SS7 CgPA
         :param msisdn: MSISDN of the subscriber
         :param dgt: HLR E164 GT. Usually, E164 MSISDN
+		:param sccp_np: SCCP numbering plan. 1 - E164, 7 - E214
         :return: BeautifulSoup xml object
         Usage example:
         import roamability as rb
@@ -462,13 +464,13 @@ class SendMsgSs7:
             <timeout>3</timeout>
             <d_ssn>6</d_ssn>
             <o_ssn>8</o_ssn>
-            <sccp_np>1</sccp_np>
+            <sccp_np>%s</sccp_np>
             <o_gt>%s</o_gt>
             <d_gt>%s</d_gt>
             <msisdn>%s</msisdn>
             <priority>1</priority>
             <address>%s</address>
-            </ss7gw>""" % (ogt, dgt, msisdn, ogt)
+            </ss7gw>""" % (sccp_np, ogt, dgt, msisdn, ogt)
         resp = self.execute_http(req, self.ss7_url, self.ss7_path)
         return BeautifulSoup(resp, 'xml')
 
@@ -488,7 +490,7 @@ class SendMsgSs7:
         resp = self.execute_http(req, self.ss7_url, self.ss7_path)
         return BeautifulSoup(resp, 'xml')
 
-    def sai(self, ogt, dgt, imsi, node):
+    def sai(self, ogt, dgt, imsi, node=0, sccp_np=7):
         req = """<?xml version=\"1.0\"?>
             <ss7gw request=\"SAIN\">
             <d_ssn>6</d_ssn>
@@ -497,9 +499,9 @@ class SendMsgSs7:
             <o_ssn>7</o_ssn>
             <imsi>%s</imsi>
             <num_req_vec>1</num_req_vec>
-            <sccp_np>7</sccp_np>
+            <sccp_np>%s</sccp_np>
             <node_type>%s</node_type>
-            </ss7gw>""" % (ogt, dgt, imsi, node)
+            </ss7gw>""" % (ogt, dgt, imsi, sccp_np, node)
         resp = self.execute_http(req, self.ss7_url, self.ss7_path)
         return BeautifulSoup(resp, 'xml')
 
